@@ -55,7 +55,7 @@ const generateEmailHTML = ({ type, name, email, message }) => {
 const sendMail = async (to, subject, data) => {
   try {
     const info = await transporter.sendMail({
-      from: `"Portfolio" <${process.env.EMAIL_USER}>`,
+      from: `"Nitesh Kumar Sharma" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html: generateEmailHTML(data),
