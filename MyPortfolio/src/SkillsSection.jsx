@@ -39,56 +39,69 @@ const skills = [
   { name: "CI/CD Pipeline", icon: <SiGitlab className="text-orange-400" /> },
 ];
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 40, scale: 0.95 },
-  visible: { opacity: 1, y: 0, scale: 1 },
+// Reusable Marquee Row
+const MarqueeRow = ({ direction = "left", duration = 20 }) => {
+  return (
+    <div className="overflow-hidden relative w-full">
+      <motion.div
+        className="flex gap-8 w-max"
+        animate={{ x: direction === "left" ? ["0%", "-50%"] : ["-50%", "0%"] }}
+        transition={{ repeat: Infinity, duration, ease: "linear" }}
+      >
+        {/* Duplicate skill list twice for continuous flow */}
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="flex gap-8">
+            {skills.map((skill, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col items-center min-w-[100px] hover:scale-110 transition-transform"
+              >
+                <div className="text-4xl mb-1">{skill.icon}</div>
+                <span className="text-sm text-yellow-400">{skill.name}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
 };
 
 const SkillsSection = () => {
   return (
     <section
       id="skills"
-      className="w-full py-16 text-white flex flex-col items-center"
+      className="w-full py-16 text-white flex flex-col items-center relative"
     >
-      <motion.h2
-        className="text-4xl md:text-5xl font-bold mb-12 text-yellow-400"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.3 }}
-        transition={{ duration: 0.7 }}
-      >
+      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-12 text-yellow-400">
         My Skills
-      </motion.h2>
+      </h2>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6 max-w-6xl w-full px-4">
+      {/* --- Desktop Grid --- */}
+      <div className="hidden sm:grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-6 max-w-6xl w-full px-4">
         {skills.map((skill, idx) => (
-          <motion.div
+          <div
             key={idx}
-            variants={cardVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.6, delay: idx * 0.1 }}
-            className="border border-zinc-600 rounded-2xl p-4 bg-zinc-900/80 backdrop-blur-lg flex flex-col items-center text-center hover:scale-105 transition-transform cursor-pointer shadow-md hover:shadow-yellow-400/40"
+            className="border border-zinc-600 rounded-2xl p-4 bg-zinc-900/80 flex flex-col items-center text-center hover:scale-105 transition-transform shadow-md hover:shadow-yellow-400/40"
           >
-            <motion.div
-              className="text-4xl mb-2"
-              animate={{ y: [0, -6, 0] }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "loop",
-                ease: "easeInOut",
-              }}
-              whileHover={{ rotate: 360 }}
-            >
-              {skill.icon}
-            </motion.div>
+            <div className="text-4xl mb-2">{skill.icon}</div>
             <h4 className="text-lg font-semibold text-yellow-400">
               {skill.name}
             </h4>
-          </motion.div>
+          </div>
         ))}
+      </div>
+
+      {/* --- Mobile Continuous Marquee --- */}
+      <div className="flex flex-col gap-8 w-full sm:hidden relative">
+        {/* Fade edges */}
+        <div className="absolute top-0 bottom-0 left-0 w-12 bg-gradient-to-r from-zinc-900 to-transparent z-20 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 right-0 w-12 bg-gradient-to-l from-zinc-900 to-transparent z-20 pointer-events-none" />
+
+        {/* 3 Continuous Rows */}
+        <MarqueeRow direction="left" duration={20} />
+        <MarqueeRow direction="right" duration={24} />
+        <MarqueeRow direction="left" duration={28} />
       </div>
     </section>
   );
