@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // <-- add this
+import { useNavigate } from "react-router-dom";
 import HiringPortalImg from "./assets/HiringPortal.png";
 import ShopizoImg from "./assets/ShopizoImg.png";
 import PortfolioImg from "./assets/portfolioImg.png";
@@ -43,7 +43,7 @@ const cardVariants = {
 };
 
 const ProjectsSection = () => {
-  const navigate = useNavigate(); // <-- for navigation
+  const navigate = useNavigate();
 
   return (
     <section
@@ -51,7 +51,7 @@ const ProjectsSection = () => {
       className="w-full py-20 bg-zinc-900 text-white flex flex-col items-center relative overflow-hidden"
     >
       <motion.h2
-        className="text-4xl md:text-5xl font-bold mb-16 text-yellow-400"
+        className="text-3xl sm:text-4xl md:text-5xl font-bold mb-16 text-yellow-400"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -59,7 +59,7 @@ const ProjectsSection = () => {
         My Projects
       </motion.h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-7xl w-full px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 max-w-7xl w-full px-4">
         {projects.map((project, idx) => (
           <motion.div
             key={idx}
@@ -68,7 +68,7 @@ const ProjectsSection = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.6, delay: idx * 0.2 }}
-            className="relative rounded-3xl cursor-pointer group perspective"
+            className="relative rounded-3xl cursor-pointer group"
           >
             <motion.div
               className="relative border border-zinc-600 rounded-3xl p-1"
@@ -76,34 +76,42 @@ const ProjectsSection = () => {
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <div className="bg-zinc-900/90 backdrop-blur-lg rounded-3xl overflow-hidden">
-                <div className="p-4 bg-zinc-800/50">
+                <div className="p-3 sm:p-4 bg-zinc-800/50">
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-64 object-cover rounded-xl shadow-md transition-transform duration-500 group-hover:scale-105"
+                    className="
+                      w-full 
+                      h-40 sm:h-52 md:h-64 
+                      object-cover rounded-xl shadow-md 
+                      transition-transform duration-500 
+                      group-hover:scale-105
+                    "
                   />
                 </div>
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold mb-2 text-yellow-400">
+                <div className="p-4 sm:p-6">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-2 text-yellow-400">
                     {project.title}
                   </h3>
-                  <p className="text-gray-300 mb-4">{project.description}</p>
+                  <p className="text-gray-300 text-sm sm:text-base mb-4">
+                    {project.description}
+                  </p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {project.tech.map((tech, i) => (
                       <span
                         key={i}
-                        className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-medium hover:scale-110 hover:shadow-lg transition-all duration-300"
+                        className="bg-yellow-400 text-black px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium hover:scale-110 hover:shadow-lg transition-all duration-300"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
-                  <div className="flex gap-4">
+                  <div className="flex flex-wrap gap-3 sm:gap-4">
                     <a
                       href={project.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded transition"
+                      className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded transition text-sm sm:text-base"
                     >
                       <FaGithub /> GitHub
                     </a>
@@ -112,7 +120,7 @@ const ProjectsSection = () => {
                         href={project.live}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-black hover:bg-yellow-500 rounded transition"
+                        className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-yellow-400 text-black hover:bg-yellow-500 rounded transition text-sm sm:text-base"
                       >
                         <FaExternalLinkAlt /> Live
                       </a>
@@ -125,7 +133,7 @@ const ProjectsSection = () => {
         ))}
       </div>
 
-      {/* More Projects Button */}
+      {/* More Projects Button (optional) */}
       {/* <motion.button
         onClick={() => navigate("/projects")}
         whileHover={{ scale: 1.05 }}
