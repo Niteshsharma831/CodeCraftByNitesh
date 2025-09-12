@@ -23,7 +23,7 @@ const HireMeSection = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/hirerequests",
+        "https://codecraftbynitesh.onrender.com/api/hirerequests",
         formData
       );
 
