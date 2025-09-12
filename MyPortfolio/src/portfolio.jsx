@@ -11,7 +11,7 @@ import TestimonialsSection from "./TestimonialsSection";
 import ContactSection from "./ContactSection";
 import FooterSection from "./FooterSection";
 import AboutMeSection from "./AboutMeSection";
-import resumePdf from "./files/Nitesh_Sharma_Resume.pdf";
+import resumePdf from "./files/Nitesh_Sharma_Resume ✨.pdf";
 import InteractiveCursor from "./components/InteractiveBackground";
 
 const useCounter = (end, duration = 2000) => {
