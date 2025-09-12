@@ -8,9 +8,9 @@ const AboutMeSection = () => {
       id="about"
       className="w-full py-24 bg-zinc-900 text-white flex flex-col md:flex-row items-center justify-center gap-12 px-6 md:px-20"
     >
-      {/* Left: Profile Image */}
+      {/* Left: Profile Image (❌ hidden on mobile, ✅ visible on sm+) */}
       <motion.div
-        className="md:w-1/2 flex justify-center relative"
+        className="hidden sm:flex md:w-1/2 justify-center relative"
         initial={{ opacity: 0, x: -50 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: 1 }}
@@ -19,9 +19,9 @@ const AboutMeSection = () => {
         <div
           className="
             absolute -bottom-4 -right-4
-            w-40 h-40       /* mobile */
-            sm:w-56 sm:h-56 /* tablet */
-            md:w-80 md:h-80 /* desktop */
+            w-40 h-40
+            sm:w-56 sm:h-56
+            md:w-80 md:h-80
             bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 
             blur-3xl opacity-30 z-0
           "
@@ -33,9 +33,9 @@ const AboutMeSection = () => {
           alt="Nitesh"
           className="
             relative 
-            w-40 h-40       /* mobile */
-            sm:w-56 sm:h-56 /* tablet */
-            md:w-80 md:h-80 /* desktop */
+            w-40 h-40
+            sm:w-56 sm:h-56
+            md:w-80 md:h-80
             object-cover rounded-2xl shadow-2xl z-10 
             transform -rotate-3 hover:rotate-0 hover:scale-105 
             transition-all duration-500
