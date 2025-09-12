@@ -16,11 +16,30 @@ const AboutMeSection = () => {
         transition={{ duration: 1 }}
       >
         {/* Glow behind image */}
-        <div className="absolute -bottom-6 -right-6 w-72 md:w-80 h-72 md:h-80 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 blur-3xl opacity-30 z-0"></div>
+        <div
+          className="
+            absolute -bottom-4 -right-4
+            w-40 h-40       /* mobile */
+            sm:w-56 sm:h-56 /* tablet */
+            md:w-80 md:h-80 /* desktop */
+            bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 
+            blur-3xl opacity-30 z-0
+          "
+        ></div>
+
+        {/* Profile Image */}
         <motion.img
           src={myPic}
           alt="Nitesh"
-          className="relative w-72 md:w-80 h-72 md:h-80 object-cover rounded-2xl shadow-2xl z-10 transform -rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-500"
+          className="
+            relative 
+            w-40 h-40       /* mobile */
+            sm:w-56 sm:h-56 /* tablet */
+            md:w-80 md:h-80 /* desktop */
+            object-cover rounded-2xl shadow-2xl z-10 
+            transform -rotate-3 hover:rotate-0 hover:scale-105 
+            transition-all duration-500
+          "
         />
       </motion.div>
 

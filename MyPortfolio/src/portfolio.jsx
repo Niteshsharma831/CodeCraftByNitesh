@@ -130,16 +130,19 @@ const Hero = () => {
         </motion.div>
 
         {/* Right Image */}
+        {/* Right Image */}
         <motion.div className="relative w-full md:w-1/2 flex justify-center items-center z-20 mt-8 md:mt-0">
           {/* Bold, glowing diagonal border */}
           <motion.div
-            className="absolute rotate-45 rounded-2xl border-6 sm:border-8 border-purple-500 opacity-60 shadow-[0_0_60px_rgba(168,85,247,0.6)]"
-            style={{
-              width: "240px",
-              height: "240px",
-              maxWidth: "70vw",
-              maxHeight: "70vw",
-            }}
+            className="
+      absolute rotate-45 rounded-2xl 
+      border-4 sm:border-6 md:border-8 
+      border-purple-500 opacity-60 
+      shadow-[0_0_40px_rgba(168,85,247,0.6)]
+      w-[200px] h-[200px]       /* mobile */
+      sm:w-[250px] sm:h-[250px] /* tablet */
+      md:w-[350px] md:h-[350px] /* desktop */
+    "
             animate={{ scale: [1, 1.07, 1] }}
             transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
           />
@@ -148,7 +151,13 @@ const Hero = () => {
           <motion.img
             src={myPic}
             alt="Nitesh"
-            className="relative w-40 sm:w-56 md:w-72 h-40 sm:h-56 md:h-72 rounded-2xl shadow-2xl z-20 object-cover"
+            className="
+      relative 
+      w-32 h-32         /* mobile */
+      sm:w-48 sm:h-48   /* tablet */
+      md:w-72 md:h-72   /* desktop */
+      rounded-2xl shadow-2xl z-20 object-cover
+    "
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
