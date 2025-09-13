@@ -1,4 +1,3 @@
-// SkillsSection.jsx
 import React from "react";
 import { motion } from "framer-motion";
 import {
@@ -19,6 +18,7 @@ import {
   SiFlutter,
   SiDocker,
   SiGitlab,
+  SiMysql,
   SiPostgresql,
 } from "react-icons/si";
 
