@@ -19,6 +19,7 @@ import {
   SiFlutter,
   SiDocker,
   SiGitlab,
+  SiPostgresql,
 } from "react-icons/si";
 
 const skills = [
