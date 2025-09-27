@@ -10,39 +10,41 @@ const createHireRequest = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Save to DB
+    // Save request
     const hireRequest = new HireRequest({ name, email, message });
     await hireRequest.save();
 
-    // 1️⃣ Email to portfolio owner
-    try {
-      await sendMail(process.env.EMAIL_USER, "New Hire Request", {
-        type: "ownerNotification",
-        name,
-        email,
-        message,
-      });
-      console.log("✅ Owner notification mail sent");
-    } catch (err) {
-      console.error("❌ Failed to send owner mail:", err);
-    }
-
-    // 2️⃣ Email to user
-    try {
-      await sendMail(email, "Thank You for Contacting Me!", {
-        type: "userThankYou",
-        name,
-        message,
-      });
-      console.log("✅ Thank-you mail sent to user");
-    } catch (err) {
-      console.error("❌ Failed to send user mail:", err);
-    }
-
+    // Respond immediately ✅
     res.status(201).json({
       message: "Hire request submitted successfully",
       hireRequest,
     });
+
+    // Send emails in background (doesn't block response)
+    (async () => {
+      try {
+        await sendMail(process.env.EMAIL_USER, "New Hire Request", {
+          type: "ownerNotification",
+          name,
+          email,
+          message,
+        });
+        console.log("✅ Owner notification mail sent");
+      } catch (err) {
+        console.error("❌ Failed to send owner mail:", err);
+      }
+
+      try {
+        await sendMail(email, "Thank You for Contacting Me!", {
+          type: "userThankYou",
+          name,
+          message,
+        });
+        console.log("✅ Thank-you mail sent to user");
+      } catch (err) {
+        console.error("❌ Failed to send user mail:", err);
+      }
+    })();
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
