@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
 import { Link as ScrollLink } from "react-scroll";
+import { Toaster } from "react-hot-toast";
 
 import AllProjectsPage from "./AllProjectsPage";
 import Hero from "./portfolio";
@@ -22,6 +23,17 @@ function App() {
 
   return (
     <Router>
+      {/* ✅ Global Toast Container (always visible) */}
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            zIndex: 9999, // 🧠 ensures toast appears above navbar
+          },
+        }}
+      />
+
       {/* Navbar */}
       <nav className="fixed w-full top-0 z-50 bg-zinc-900/95 backdrop-blur-md shadow-lg">
         <div className="max-w-6xl mx-auto flex justify-between items-center p-4">

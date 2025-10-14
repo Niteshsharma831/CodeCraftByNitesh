@@ -1,4 +1,3 @@
-// HireMeSection.jsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
@@ -10,6 +9,7 @@ const HireMeSection = () => {
     email: "",
     message: "",
   });
+
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
@@ -17,22 +17,35 @@ const HireMeSection = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form submitted with data:", formData); // ✅ Debug
 
     setLoading(true);
-    toast.loading("Sending your message...");
+    const toastId = toast.loading("Sending your message...");
 
     try {
       const res = await axios.post(
         "https://codecraftbynitesh.onrender.com/api/hirerequests",
-        formData
+        formData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
       );
 
-      toast.dismiss();
+      console.log("Response received:", res.data);
+      toast.dismiss(toastId);
       toast.success(res.data.message || "Message sent successfully!");
       setFormData({ name: "", email: "", message: "" });
     } catch (err) {
-      toast.dismiss();
-      toast.error(err.response?.data?.error || "Failed to send message.");
+      console.error("Error occurred:", err);
+      toast.dismiss(toastId);
+
+      if (err.response) {
+        toast.error(err.response.data?.error || "Failed to send message.");
+      } else if (err.request) {
+        toast.error("Network error! Please check your connection.");
+      } else {
+        toast.error("Something went wrong!");
+      }
     } finally {
       setLoading(false);
     }
@@ -48,7 +61,15 @@ const HireMeSection = () => {
       id="hireme"
       className="w-full py-16 sm:py-24 text-white flex flex-col items-center relative px-4 sm:px-6 md:px-20"
     >
-      <Toaster position="top-right" reverseOrder={false} />
+      {/* ✅ Keep only one Toaster in the entire app if possible */}
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          style: { zIndex: 9999 },
+        }}
+      />
+
       <div className="flex flex-col items-center w-full max-w-3xl">
         <motion.h2
           className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-yellow-400 text-center"
@@ -58,6 +79,7 @@ const HireMeSection = () => {
         >
           Hire Me
         </motion.h2>
+
         <motion.p
           className="text-gray-300 text-base sm:text-lg md:text-xl mb-8 sm:mb-12 text-center"
           initial={{ opacity: 0, y: -20 }}
