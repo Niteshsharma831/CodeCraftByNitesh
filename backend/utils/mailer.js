@@ -53,6 +53,7 @@ const generateEmailHTML = ({ type, name, email, message }) => {
 
 // send mail function
 const sendMail = async (to, subject, data) => {
+  console.log("📧 Sending email to:", to, "subject:", subject); // debug
   try {
     const info = await transporter.sendMail({
       from: `"Nitesh Kumar Sharma" <${process.env.EMAIL_USER}>`,
