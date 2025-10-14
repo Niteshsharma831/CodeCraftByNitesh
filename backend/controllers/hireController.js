@@ -1,5 +1,5 @@
 const HireRequest = require("../models/HireRequest");
-const sendMail = require("../utils/mailer");
+const sendMail = require("../utils/mailer.js");
 
 // POST: create hire request
 const createHireRequest = async (req, res) => {
@@ -10,37 +10,39 @@ const createHireRequest = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
+    // Save request
     const hireRequest = new HireRequest({ name, email, message });
     await hireRequest.save();
 
+    // Send emails before responding
+    try {
+      await sendMail(process.env.EMAIL_USER, "New Hire Request", {
+        type: "ownerNotification",
+        name,
+        email,
+        message,
+      });
+      console.log("✅ Owner notification mail sent");
+    } catch (err) {
+      console.error("❌ Failed to send owner mail:", err);
+    }
+
+    try {
+      await sendMail(email, "Thank You for Contacting Me!", {
+        type: "userThankYou",
+        name,
+        message,
+      });
+      console.log("✅ Thank-you mail sent to user");
+    } catch (err) {
+      console.error("❌ Failed to send user mail:", err);
+    }
+
+    // Respond after emails are sent
     res.status(201).json({
-      message: "Hire request submitted successfully",
+      message: "Hire request submitted successfully and emails sent",
       hireRequest,
     });
-
-    // Send emails asynchronously
-    (async () => {
-      try {
-        await sendMail(process.env.EMAIL_USER, "New Hire Request", {
-          type: "ownerNotification",
-          name,
-          email,
-          message,
-        });
-      } catch (err) {
-        console.error("❌ Owner mail error:", err);
-      }
-
-      try {
-        await sendMail(email, "Thank You for Contacting Me!", {
-          type: "userThankYou",
-          name,
-          message,
-        });
-      } catch (err) {
-        console.error("❌ User mail error:", err);
-      }
-    })();
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
