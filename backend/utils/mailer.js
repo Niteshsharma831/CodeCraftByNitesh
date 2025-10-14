@@ -1,17 +1,29 @@
+require("dotenv").config();
 const nodemailer = require("nodemailer");
 
+// Create transporter
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465, // 465 for SSL, 587 for TLS
+  secure: true, // true for 465, false for 587
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, // 16-character App Password
+    user: process.env.EMAIL_USER, // Your Gmail
+    pass: process.env.EMAIL_PASS, // Gmail App Password (16 chars)
   },
+});
+
+// Debug verification (optional)
+transporter.verify((err, success) => {
+  if (err) {
+    console.error("❌ SMTP Connection Error:", err);
+  } else {
+    console.log("✅ SMTP Server is ready to take messages");
+  }
 });
 
 // HTML templates
 const generateEmailHTML = ({ type, name, email, message }) => {
   if (type === "ownerNotification") {
-    // Email for portfolio owner
     return `
       <div style="font-family: Arial,sans-serif; max-width:600px; margin:auto; padding:20px; background:#f4f4f4; border-radius:10px;">
         <h2 style="color:#FACC15;">📨 New Hire Request</h2>
@@ -26,7 +38,6 @@ const generateEmailHTML = ({ type, name, email, message }) => {
   }
 
   if (type === "userThankYou") {
-    // Email for the user
     return `
       <div style="font-family: Arial,sans-serif; max-width:600px; margin:auto; padding:20px; background:#f9f9f9; border-radius:10px;">
         <div style="text-align:center;">
@@ -51,19 +62,23 @@ const generateEmailHTML = ({ type, name, email, message }) => {
   return "";
 };
 
-// send mail function
+// Send mail function
 const sendMail = async (to, subject, data) => {
   console.log("📧 Sending email to:", to, "subject:", subject); // debug
+
   try {
     const info = await transporter.sendMail({
-      from: `"Nitesh Kumar Sharma" <${process.env.EMAIL_USER}>`,
+      from: `"CodeCraft By Nitesh" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html: generateEmailHTML(data),
     });
-    console.log("✅ Mail sent:", info.response);
+
+    console.log("✅ Mail sent successfully:", info.response);
+    return info;
   } catch (error) {
     console.error("❌ Mail send error:", error);
+    throw error; // propagate error if needed
   }
 };
 

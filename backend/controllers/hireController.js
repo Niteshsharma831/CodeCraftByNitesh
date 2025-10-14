@@ -10,17 +10,15 @@ const createHireRequest = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Save request
     const hireRequest = new HireRequest({ name, email, message });
     await hireRequest.save();
 
-    // Respond immediately ✅
     res.status(201).json({
       message: "Hire request submitted successfully",
       hireRequest,
     });
 
-    // Send emails in background (doesn't block response)
+    // Send emails asynchronously
     (async () => {
       try {
         await sendMail(process.env.EMAIL_USER, "New Hire Request", {
@@ -29,9 +27,8 @@ const createHireRequest = async (req, res) => {
           email,
           message,
         });
-        console.log("✅ Owner notification mail sent");
       } catch (err) {
-        console.error("❌ Failed to send owner mail:", err);
+        console.error("❌ Owner mail error:", err);
       }
 
       try {
@@ -40,9 +37,8 @@ const createHireRequest = async (req, res) => {
           name,
           message,
         });
-        console.log("✅ Thank-you mail sent to user");
       } catch (err) {
-        console.error("❌ Failed to send user mail:", err);
+        console.error("❌ User mail error:", err);
       }
     })();
   } catch (error) {
