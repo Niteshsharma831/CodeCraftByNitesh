@@ -1,5 +1,5 @@
 const HireRequest = require("../models/HireRequest");
-const sendMail = require("../utils/mailer"); // import sendMail
+const sendMail = require("../utils/mailer");
 
 // POST: create hire request
 const createHireRequest = async (req, res) => {

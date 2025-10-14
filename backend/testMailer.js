@@ -3,13 +3,13 @@ const sendMail = require("./utils/mailer");
 
 (async () => {
   try {
-    await sendMail(
-      "nr671682@gmail.com", // your email to test
-      "Test Email from Portfolio",
-      "This is a test email to check SMTP"
-    );
-    console.log("Mail sent successfully");
+    await sendMail("niteshkumarsharma831@gmail.com", "Test Mail", {
+      type: "userThankYou",
+      name: "Test User",
+      message: "This is a test message",
+    });
+    console.log("✅ Test mail sent successfully");
   } catch (err) {
-    console.error("Mail failed:", err);
+    console.error("❌ Test mail failed:", err);
   }
 })();

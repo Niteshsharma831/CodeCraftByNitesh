@@ -26,8 +26,8 @@ app.use(express.json());
 // ✅ MongoDB connection
 const MONGO_URI =
   process.env.NODE_ENV === "production"
-    ? process.env.MONGO_URI // live connection string from Render env
-    : "mongodb://127.0.0.1:27017/PortFolioDb"; // local DB for dev
+    ? process.env.MONGO_URI 
+    : "mongodb://127.0.0.1:27017/PortFolioDb"; 
 
 mongoose
   .connect(MONGO_URI, {
