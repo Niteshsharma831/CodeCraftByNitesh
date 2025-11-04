@@ -1,54 +1,62 @@
+// utils/mailer.js
 require("dotenv").config();
+const nodemailer = require("nodemailer");
 const { Resend } = require("resend");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const generateEmailHTML = ({ name, email, message }) => {
-  const headerColor = "#FACC15";
-  const bodyColor = "#f9fafb";
-  const borderColor = "#e5e7eb";
-
-  return `
-    <div style="font-family:'Segoe UI',Arial,sans-serif;background:${bodyColor};padding:30px;">
-      <div style="max-width:600px;margin:auto;background:white;border:1px solid ${borderColor};border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.05);overflow:hidden;">
-        <div style="background:${headerColor};color:#1f2937;padding:20px 25px;text-align:center;">
-          <h2 style="margin:0;">📩 New Message from ${name}</h2>
-        </div>
-        <div style="padding:25px;">
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong></p>
-          <div style="background:${bodyColor};padding:10px;border-radius:8px;border:1px solid ${borderColor};margin-top:5px;">
-            ${message}
-          </div>
-        </div>
-      </div>
+// 🧠 Auto HTML Template
+const generateEmailHTML = ({ name, email, message }) => `
+  <div style="font-family: Arial, sans-serif; background: #f9fafb; padding: 20px;">
+    <div style="background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 20px;">
+      <h2 style="color: #222;">📬 New Message from ${name}</h2>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Message:</strong></p>
+      <p style="background: #f3f4f6; padding: 10px; border-radius: 6px;">${message}</p>
     </div>
-  `;
-};
+  </div>
+`;
 
-// ✅ Send Mail Function
-const sendMail = async ({ name, email, message, to }) => {
+// 🌍 Auto Mailer
+const sendMail = async (to, subject, { name, email, message }) => {
+  const htmlContent = generateEmailHTML({ name, email, message });
+  const isProduction = process.env.NODE_ENV === "production";
+
   try {
-    if (!to) throw new Error("Recipient email ('to') is missing");
+    if (isProduction) {
+      // ✅ Use Resend in production (Render)
+      const response = await resend.emails.send({
+        from: "CodeCraft By Nitesh <support@sharmafurniturehouse.co.in>", // Must be verified domain
+        to,
+        subject,
+        html: htmlContent,
+        reply_to: email,
+      });
+      console.log("✅ Resend Response:", response);
+      return response;
+    } else {
+      // ✅ Use Gmail (for localhost testing)
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
 
-    const htmlContent = generateEmailHTML({ name, email, message });
+      const info = await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        html: htmlContent,
+      });
 
-    const response = await resend.emails.send({
-      from: "CodeCraft By Nitesh <onboarding@resend.dev>",
-      to: String(to), // ensure it’s a string
-      subject: `Message from ${name}`,
-      html: htmlContent,
-      reply_to: email,
-    });
-
-    console.log("✅ Resend API Response:", response);
-    return response;
+      console.log("✅ Gmail Response:", info.response);
+      return info;
+    }
   } catch (error) {
     console.error("❌ Email send error:", error.message);
-    if (error.response) {
-      console.error("📩 Resend error response:", error.response);
-    }
+    if (error.response) console.error(error.response);
   }
 };
 
