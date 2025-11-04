@@ -1,25 +1,7 @@
 require("dotenv").config();
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-// ✅ Create transporter (works for Gmail or Brevo)
-const transporter = nodemailer.createTransport({
-  service: "gmail", // Or use "smtp-relay.brevo.com" if on Render
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, // App Password (16 chars)
-  },
-  pool: true,
-  maxConnections: 5,
-  maxMessages: 100,
-});
-
-// ✅ Verify transporter once
-if (process.env.NODE_ENV !== "production") {
-  transporter.verify((err) => {
-    if (err) console.error("❌ SMTP Error:", err.message);
-    else console.log("✅ Mail server ready");
-  });
-}
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // 🎨 Modern Email UI Template
 const generateEmailHTML = ({ type, name, email, message }) => {
@@ -31,11 +13,9 @@ const generateEmailHTML = ({ type, name, email, message }) => {
     return `
       <div style="font-family: 'Segoe UI', Arial, sans-serif; background:${bodyColor}; padding:30px;">
         <div style="max-width:600px; margin:auto; background:white; border:1px solid ${borderColor}; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.05); overflow:hidden;">
-          
           <div style="background:${headerColor}; color:#1f2937; padding:20px 25px; text-align:center;">
             <h2 style="margin:0;">📩 New Hire Request</h2>
           </div>
-          
           <div style="padding:25px;">
             <p style="font-size:16px; color:#111827;">You’ve received a new hire request from your portfolio website.</p>
             <hr style="border:none; border-top:1px solid ${borderColor}; margin:15px 0;">
@@ -58,11 +38,9 @@ const generateEmailHTML = ({ type, name, email, message }) => {
     return `
       <div style="font-family: 'Segoe UI', Arial, sans-serif; background:${bodyColor}; padding:30px;">
         <div style="max-width:600px; margin:auto; background:white; border:1px solid ${borderColor}; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.05); overflow:hidden;">
-          
           <div style="background:#4CAF50; color:white; padding:20px 25px; text-align:center;">
             <h2 style="margin:0;">Thank You, ${name}! 🎉</h2>
           </div>
-          
           <div style="padding:25px;">
             <p style="font-size:16px; color:#111827;">
               We’ve received your message and appreciate you reaching out to <strong>CodeCraft By Nitesh</strong>.
@@ -94,21 +72,26 @@ const generateEmailHTML = ({ type, name, email, message }) => {
   return "";
 };
 
-// ✅ Send Email Function
+// ✅ Send Email Function using Resend
 const sendMail = async (to, subject, data) => {
   try {
-    const mailOptions = {
-      from: `"CodeCraft By Nitesh" <${process.env.EMAIL_USER}>`,
-      to,
-      subject,
-      html: generateEmailHTML(data),
-    };
+    const htmlContent = generateEmailHTML(data);
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`✅ Email sent to ${to}: ${info.response}`);
-    return info;
+    const response = await resend.emails.send({
+      from: "CodeCraft By Nitesh <noreply@resend.dev>", // You can replace with a custom verified domain later
+      to: Array.isArray(to) ? to : [to],
+      subject,
+      html: htmlContent,
+    });
+
+    console.log(
+      `✅ Email sent successfully to ${to}:`,
+      response.id || response
+    );
+    return response;
   } catch (error) {
     console.error("❌ Email send error:", error.message);
+    if (error.response) console.error("Resend response:", error.response);
   }
 };
 
