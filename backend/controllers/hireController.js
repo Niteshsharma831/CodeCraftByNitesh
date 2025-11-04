@@ -1,43 +1,43 @@
 const HireRequest = require("../models/HireRequest");
 const sendMail = require("../utils/mailer.js");
 
-// POST: create hire request (optimized for speed)
+// ✅ POST: Create Hire Request
 const createHireRequest = async (req, res) => {
   try {
-    const { name, email, message } = req.body;
+    const { name, email, message, to } = req.body;
 
-    if (!name || !email || !message) {
+    // Validate required fields
+    if (!name || !email || !message || !to) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // ✅ Save request in MongoDB
+    // ✅ Save the request in MongoDB
     const hireRequest = new HireRequest({ name, email, message });
     await hireRequest.save();
 
-    // ✅ Respond immediately (non-blocking)
+    // ✅ Respond to frontend immediately
     res.status(201).json({
       success: true,
       message: "Hire request received successfully!",
     });
 
-    // ✅ Send emails in background (non-blocking)
-    // Owner Notification
-    sendMail(process.env.EMAIL_USER, "New Hire Request", {
+    // ✅ Send notification email to dynamic recipient (from body)
+    sendMail(to, "New Hire Request Received", {
       type: "ownerNotification",
       name,
       email,
       message,
     })
-      .then(() => console.log("✅ Owner notification mail sent"))
+      .then(() => console.log("✅ Notification mail sent to:", to))
       .catch((err) => console.error("❌ Failed to send owner mail:", err));
 
-    // User Thank-You Mail
+    // ✅ Send thank-you email to the user
     sendMail(email, "Thank You for Contacting Me!", {
       type: "userThankYou",
       name,
       message,
     })
-      .then(() => console.log("✅ Thank-you mail sent to user"))
+      .then(() => console.log("✅ Thank-you mail sent to user:", email))
       .catch((err) => console.error("❌ Failed to send user mail:", err));
   } catch (error) {
     console.error("❌ Error creating hire request:", error);
@@ -45,7 +45,7 @@ const createHireRequest = async (req, res) => {
   }
 };
 
-// GET: retrieve all hire requests
+// ✅ GET: Retrieve All Hire Requests
 const getHireRequests = async (req, res) => {
   try {
     const requests = await HireRequest.find().sort({ createdAt: -1 });
