@@ -1,10 +1,8 @@
 require("dotenv").config();
 const { Resend } = require("resend");
 
-// Initialize Resend client
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// HTML Template
 const generateEmailHTML = ({ name, email, message }) => {
   const headerColor = "#FACC15";
   const bodyColor = "#f9fafb";
@@ -13,11 +11,9 @@ const generateEmailHTML = ({ name, email, message }) => {
   return `
     <div style="font-family:'Segoe UI',Arial,sans-serif;background:${bodyColor};padding:30px;">
       <div style="max-width:600px;margin:auto;background:white;border:1px solid ${borderColor};border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.05);overflow:hidden;">
-        
         <div style="background:${headerColor};color:#1f2937;padding:20px 25px;text-align:center;">
           <h2 style="margin:0;">📩 New Message from ${name}</h2>
         </div>
-        
         <div style="padding:25px;">
           <p><strong>Name:</strong> ${name}</p>
           <p><strong>Email:</strong> ${email}</p>
@@ -31,15 +27,17 @@ const generateEmailHTML = ({ name, email, message }) => {
   `;
 };
 
-// Send Mail (Dynamic Receiver)
+// ✅ Send Mail Function
 const sendMail = async ({ name, email, message, to }) => {
   try {
+    if (!to) throw new Error("Recipient email ('to') is missing");
+
     const htmlContent = generateEmailHTML({ name, email, message });
 
     const response = await resend.emails.send({
-      from: "CodeCraft By Nitesh <onboarding@resend.dev>", // ✅ sandbox sender
-      to: [to],
-      subject: `New message from ${name}`,
+      from: "CodeCraft By Nitesh <onboarding@resend.dev>",
+      to: String(to), // ensure it’s a string
+      subject: `Message from ${name}`,
       html: htmlContent,
       reply_to: email,
     });

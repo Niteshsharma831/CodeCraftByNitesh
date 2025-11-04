@@ -22,23 +22,20 @@ const createHireRequest = async (req, res) => {
     });
 
     // ✅ Send notification email to dynamic recipient (from body)
-    sendMail(to, "New Hire Request Received", {
-      type: "ownerNotification",
-      name,
-      email,
-      message,
-    })
+    sendMail({ name, email, message, to })
       .then(() => console.log("✅ Notification mail sent to:", to))
       .catch((err) => console.error("❌ Failed to send owner mail:", err));
 
     // ✅ Send thank-you email to the user
-    sendMail(email, "Thank You for Contacting Me!", {
-      type: "userThankYou",
+    sendMail({
       name,
-      message,
+      email,
+      message: "Thank you for reaching out! I’ll get back to you soon.",
+      to: email,
     })
       .then(() => console.log("✅ Thank-you mail sent to user:", email))
       .catch((err) => console.error("❌ Failed to send user mail:", err));
+
   } catch (error) {
     console.error("❌ Error creating hire request:", error);
     res.status(500).json({ success: false, error: "Internal Server Error" });
