@@ -1,6 +1,7 @@
 const HireRequest = require("../models/HireRequest");
-const sendMail = require("../utils/mailer");
+const sendMail = require("../utils/mailer.js");
 
+// POST: create hire request (optimized for speed)
 const createHireRequest = async (req, res) => {
   try {
     const { name, email, message } = req.body;
@@ -9,46 +10,49 @@ const createHireRequest = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Save request to DB
+    // ✅ Save request in MongoDB
     const hireRequest = new HireRequest({ name, email, message });
     await hireRequest.save();
 
-    // ✅ Respond immediately
+    // ✅ Respond immediately (non-blocking)
     res.status(201).json({
-      message: "Hire request submitted successfully",
-      hireRequest,
+      success: true,
+      message: "Hire request received successfully!",
     });
 
-    // 📧 Send emails in background (non-blocking)
-    (async () => {
-      try {
-        await sendMail(process.env.EMAIL_USER, "New Hire Request", {
-          type: "ownerNotification",
-          name,
-          email,
-          message,
-        });
-        console.log("✅ Owner notification sent");
-      } catch (err) {
-        console.error("❌ Owner email failed:", err);
-      }
+    // ✅ Send emails in background (non-blocking)
+    // Owner Notification
+    sendMail(process.env.EMAIL_USER, "New Hire Request", {
+      type: "ownerNotification",
+      name,
+      email,
+      message,
+    })
+      .then(() => console.log("✅ Owner notification mail sent"))
+      .catch((err) => console.error("❌ Failed to send owner mail:", err));
 
-      try {
-        await sendMail(email, "Thank You for Contacting Me!", {
-          type: "userThankYou",
-          name,
-          message,
-        });
-        console.log("✅ Thank-you mail sent");
-      } catch (err) {
-        console.error("❌ User email failed:", err);
-      }
-    })();
-
+    // User Thank-You Mail
+    sendMail(email, "Thank You for Contacting Me!", {
+      type: "userThankYou",
+      name,
+      message,
+    })
+      .then(() => console.log("✅ Thank-you mail sent to user"))
+      .catch((err) => console.error("❌ Failed to send user mail:", err));
   } catch (error) {
-    console.error("❌ Hire request error:", error);
-    res.status(500).json({ error: "Server error: " + error.message });
+    console.error("❌ Error creating hire request:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
 
-module.exports = { createHireRequest };
+// GET: retrieve all hire requests
+const getHireRequests = async (req, res) => {
+  try {
+    const requests = await HireRequest.find().sort({ createdAt: -1 });
+    res.json(requests);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { createHireRequest, getHireRequests };

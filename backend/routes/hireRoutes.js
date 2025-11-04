@@ -7,6 +7,6 @@ const {
 
 const router = express.Router();
 router.post("/", createHireRequest);
-// router.get("/", getHireRequests);
+router.get("/", getHireRequests);
 
 module.exports = router;
