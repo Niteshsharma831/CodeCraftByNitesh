@@ -1,9 +1,16 @@
-// ExperienceSection.jsx
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaBriefcase, FaGraduationCap } from "react-icons/fa";
 
 const experiences = [
+  {
+    title: "Full Stack Developer",
+    company: "Angel Shark IT Solutions",
+    duration: "Dec 2025 - Present",
+    description:
+      "Developing scalable MERN stack applications, designing REST APIs, and implementing responsive UI/UX while collaborating in Agile teams to deliver production software.",
+    type: "work",
+  },
   {
     title: "Frontend & Full Stack Developer",
     company: "HireOnWorkBridge (Freelancing Platform)",
@@ -106,7 +113,7 @@ const ExperienceSection = () => {
               className="relative flex flex-col md:flex-row md:items-center mb-12 sm:mb-16"
             >
               {/* Timeline Dot */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 md:left-auto md:right-0 md:translate-x-1/2 bg-yellow-400 text-zinc-900 rounded-full p-3 sm:p-4 shadow-lg z-10 animate-bounce">
+              <div className="absolute left-1/2 transform -translate-x-1/2 md:left-auto md:right-0 md:translate-x-1/2 bg-yellow-400 text-zinc-900 rounded-full p-3 sm:p-4 shadow-lg z-10">
                 {exp.type === "work" ? (
                   <FaBriefcase size={18} />
                 ) : (
@@ -118,8 +125,17 @@ const ExperienceSection = () => {
               <div
                 className={`bg-zinc-900/80 backdrop-blur-lg rounded-3xl p-4 sm:p-6 md:w-5/12 shadow-2xl hover:shadow-yellow-400/60 transition-all transform hover:-translate-y-1 hover:scale-105 mt-12 md:mt-0 ${
                   isLeft ? "md:mr-auto md:text-left" : "md:ml-auto md:text-left"
+                } ${
+                  exp.company === "Angel Shark IT Solutions"
+                    ? "border-2 border-yellow-400/50"
+                    : ""
                 }`}
               >
+                {exp.company === "Angel Shark IT Solutions" && (
+                  <div className="absolute -top-2 -right-2 bg-yellow-400 text-zinc-900 text-xs font-bold px-2 py-1 rounded-full">
+                    Current
+                  </div>
+                )}
                 <motion.h3
                   className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-400 mb-1 sm:mb-2"
                   whileHover={{ scale: 1.05, color: "#FACC15" }}
@@ -135,6 +151,33 @@ const ExperienceSection = () => {
                 <p className="mt-2 text-gray-300 text-sm sm:text-base">
                   {exp.description}
                 </p>
+
+                {/* Tech stack for Angel Shark IT Solutions */}
+                {exp.company === "Angel Shark IT Solutions" && (
+                  <div className="mt-3 pt-3 border-t border-gray-700">
+                    <p className="text-xs text-gray-400 mb-2">Tech Stack:</p>
+                    <div className="flex flex-wrap gap-1">
+                      <span className="px-2 py-1 bg-yellow-400/20 text-yellow-300 rounded text-xs">
+                        React
+                      </span>
+                      <span className="px-2 py-1 bg-yellow-400/20 text-yellow-300 rounded text-xs">
+                        Node.js
+                      </span>
+                      <span className="px-2 py-1 bg-yellow-400/20 text-yellow-300 rounded text-xs">
+                        Express
+                      </span>
+                      <span className="px-2 py-1 bg-yellow-400/20 text-yellow-300 rounded text-xs">
+                        MongoDB
+                      </span>
+                      <span className="px-2 py-1 bg-yellow-400/20 text-yellow-300 rounded text-xs">
+                        REST APIs
+                      </span>
+                      <span className="px-2 py-1 bg-yellow-400/20 text-yellow-300 rounded text-xs">
+                        Tailwind CSS
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           );
