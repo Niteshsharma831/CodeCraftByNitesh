@@ -31,235 +31,336 @@ const sendMail = async ({ name, email, message, to }) => {
 
     // Professional subject lines
     const subject = isNotificationToOwner
-      ? `🎯 New Contact Request: ${name} | Portfolio`
-      : `✨ Thank You, ${name}! | Nitesh Kumar Sharma`;
+      ? `📬 New Contact Request: ${name}`
+      : `✨ Thank You, ${name}! - Message Received`;
+
+    // Get current date and time
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    const formattedTime = currentDate.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
 
     // Professional HTML templates
     const htmlContent = isNotificationToOwner
       ? `
         <!DOCTYPE html>
-        <html>
+        <html lang="en">
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>New Contact Request</title>
           <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-            body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; background: #f8fafc; }
-            .email-container { max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05); }
-            .header { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 48px 40px; text-align: center; color: white; position: relative; }
-            .header::after { content: ''; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background: #6366f1; transform: rotate(45deg); }
-            .header h1 { font-size: 32px; font-weight: 700; margin: 0 0 12px 0; letter-spacing: -0.5px; }
-            .header p { font-size: 16px; opacity: 0.95; font-weight: 400; margin: 0; }
-            .content { padding: 56px 40px; }
-            .contact-info { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
-            .info-card { background: #f8fafc; padding: 24px; border-radius: 16px; border-left: 4px solid #6366f1; transition: transform 0.2s ease; }
-            .info-card:hover { transform: translateY(-2px); }
-            .info-label { color: #64748b; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-            .info-value { color: #1e293b; font-size: 18px; font-weight: 600; margin: 0; }
-            .message-container { background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 32px; border-radius: 16px; margin: 40px 0; }
-            .message-label { color: #475569; font-size: 16px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-            .message-label::before { content: '💬'; }
-            .message-content { color: #334155; font-size: 16px; line-height: 1.8; white-space: pre-wrap; background: white; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; }
-            .action-btn { display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; text-decoration: none; padding: 16px 40px; border-radius: 12px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25); transition: all 0.3s ease; }
-            .action-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(16, 185, 129, 0.35); }
-            .footer { background: #f8fafc; padding: 32px 40px; text-align: center; border-top: 1px solid #e2e8f0; }
-            .footer-text { color: #64748b; font-size: 14px; line-height: 1.6; margin: 0; }
-            .timestamp { color: #94a3b8; font-size: 13px; margin-top: 16px; }
-            .badge { display: inline-flex; align-items: center; background: #fef3c7; color: #92400e; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; margin-left: 12px; }
-            .badge::before { content: '🆕'; margin-right: 6px; }
-            @media (max-width: 640px) {
-              .content, .header { padding: 40px 24px; }
-              .contact-info { grid-template-columns: 1fr; }
-              .header h1 { font-size: 28px; }
+            @media only screen and (min-width: 600px) {
+              .container {
+                max-width: 600px !important;
+                margin: 20px auto !important;
+                border-radius: 10px !important;
+              }
+              .header {
+                padding: 60px 40px !important;
+              }
+              .content {
+                padding: 40px !important;
+              }
+              .footer {
+                padding: 40px !important;
+              }
+              .contact-grid {
+                display: flex !important;
+                gap: 20px !important;
+              }
+              .contact-card {
+                flex: 1 !important;
+                margin-bottom: 0 !important;
+              }
+              .social-icons {
+                gap: 20px !important;
+              }
+              .social-icon {
+                width: 45px !important;
+                height: 45px !important;
+                font-size: 18px !important;
+              }
+              .action-button {
+                width: auto !important;
+                padding: 18px 50px !important;
+              }
+            }
+            
+            @media only screen and (max-width: 599px) {
+              .header h1 {
+                font-size: 24px !important;
+              }
+              .header p {
+                font-size: 15px !important;
+              }
+              .contact-card div:last-child {
+                font-size: 18px !important;
+              }
+              .message-content {
+                max-height: 250px !important;
+              }
             }
           </style>
         </head>
-        <body>
-          <div class="email-container">
-            <div class="header">
-              <h1>New Contact Request</h1>
-              <p>Someone reached out via your portfolio</p>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); line-height: 1.6; color: #333;">
+          <!-- Main Container -->
+          <div class="container" style="width: 100%; min-height: 100vh; background: white;">
+            
+            <!-- Header -->
+            <div class="header" style="background: linear-gradient(135deg, #1a237e 0%, #283593 100%); padding: 50px 20px; text-align: center; color: white;">
+              <div style="font-size: 48px; margin-bottom: 20px;">📨</div>
+              <h1 style="margin: 0; font-size: 28px; font-weight: 700; padding: 0 10px;">New Contact Request</h1>
+              <p style="margin: 10px 0 0; opacity: 0.9; font-size: 16px; padding: 0 10px;">Someone has reached out via your portfolio website</p>
             </div>
             
-            <div class="content">
-              <div class="contact-info">
-                <div class="info-card">
-                  <div class="info-label">From</div>
-                  <div class="info-value">${name}</div>
-                </div>
-                <div class="info-card">
-                  <div class="info-label">Email</div>
-                  <div class="info-value">${email}</div>
+            <!-- Content -->
+            <div class="content" style="padding: 30px 20px;">
+              
+              <!-- Contact Info -->
+              <div style="margin-bottom: 40px;">
+                <div class="contact-grid" style="width: 100%;">
+                  <div class="contact-card" style="background: #f8f9fa; padding: 25px; margin-bottom: 15px; border-left: 5px solid #667eea; border-radius: 0 8px 8px 0;">
+                    <div style="color: #6c757d; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">👤 From</div>
+                    <div style="color: #212529; font-size: 20px; font-weight: 600; word-break: break-word;">${name}</div>
+                  </div>
+                  <div class="contact-card" style="background: #f8f9fa; padding: 25px; border-left: 5px solid #764ba2; border-radius: 0 8px 8px 0;">
+                    <div style="color: #6c757d; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">📧 Email Address</div>
+                    <div style="color: #212529; font-size: 20px; font-weight: 600; word-break: break-all;">${email}</div>
+                  </div>
                 </div>
               </div>
               
-              <div class="message-container">
-                <div class="message-label">Message <span class="badge">New</span></div>
-                <div class="message-content">${message.replace(
-                  /\n/g,
-                  "<br>"
-                )}</div>
+              <!-- Message -->
+              <div style="background: #f8f9fa; padding: 25px; margin: 40px 0; border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+                  <div style="color: #495057; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                    <span>💬</span> Message
+                  </div>
+                  <span style="background: #28a745; color: white; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-top: 5px;">NEW</span>
+                </div>
+                <div class="message-content" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6; color: #495057; line-height: 1.6; max-height: 300px; overflow-y: auto;">
+                  ${message.replace(/\n/g, "<br>")}
+                </div>
               </div>
               
-              <div style="text-align: center; margin-top: 48px;">
-                <a href="mailto:${email}" class="action-btn">
+              <!-- Action Button -->
+              <div style="text-align: center; margin: 50px 0;">
+                <a href="mailto:${email}" class="action-button" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; padding: 18px 40px; border-radius: 10px; font-weight: 600; font-size: 18px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); width: 100%; max-width: 300px;">
                   ✉️ Reply to ${name.split(" ")[0]}
                 </a>
               </div>
+              
+              <!-- Social Links -->
+              <div style="text-align: center; margin: 50px 0;">
+                <div style="color: #6c757d; font-size: 16px; margin-bottom: 20px;">Connect with me:</div>
+                <div class="social-icons" style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                  <a href="https://www.linkedin.com/in/nitesh-kumar-sharma-2894a1185/" class="social-icon" style="display: inline-block; width: 50px; height: 50px; background: #0077b5; border-radius: 50%; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">in</a>
+                  <a href="https://www.facebook.com/niteshsharma.sharma.796" class="social-icon" style="display: inline-block; width: 50px; height: 50px; background: #1877f2; border-radius: 50%; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">f</a>
+                  <a href="https://www.instagram.com/niteshsharma_99/" class="social-icon" style="display: inline-block; width: 50px; height: 50px; background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d); border-radius: 50%; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">ig</a>
+                  <a href="https://github.com/niteshkumarsharma" class="social-icon" style="display: inline-block; width: 50px; height: 50px; background: #333; border-radius: 50%; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">gh</a>
+                </div>
+              </div>
+              
             </div>
             
-            <div class="footer">
-              <p class="footer-text">
-                This notification was sent from your portfolio contact form
+            <!-- Footer -->
+            <div class="footer" style="background: #f8f9fa; padding: 30px 20px; text-align: center; border-top: 1px solid #dee2e6;">
+              <p style="color: #6c757d; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0; padding: 0 10px;">
+                This notification was automatically sent from your portfolio contact form.<br>
+                The sender will be expecting your response within 24 hours.
               </p>
-              <p class="timestamp">
-                ${new Date().toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })} • ${new Date().toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}
-              </p>
+              <div style="color: #adb5bd; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                <span>🕐</span>
+                <span>${formattedDate} at ${formattedTime}</span>
+              </div>
             </div>
+            
           </div>
         </body>
         </html>
       `
       : `
         <!DOCTYPE html>
-        <html>
+        <html lang="en">
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Thank You Message</title>
           <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-            body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; background: #f8fafc; }
-            .email-container { max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05); }
-            .header { background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%); padding: 60px 40px; text-align: center; color: white; position: relative; }
-            .header h1 { font-size: 36px; font-weight: 700; margin: 0 0 16px 0; letter-spacing: -0.5px; }
-            .header p { font-size: 18px; opacity: 0.95; font-weight: 400; margin: 0; }
-            .content { padding: 56px 40px; }
-            .greeting { text-align: center; margin-bottom: 40px; }
-            .greeting h2 { color: #1e293b; font-size: 28px; font-weight: 700; margin: 0 0 16px 0; }
-            .greeting p { color: #475569; font-size: 18px; margin: 0; line-height: 1.7; }
-            .message-card { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 32px; border-radius: 20px; margin: 40px 0; position: relative; overflow: hidden; }
-            .message-card::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: linear-gradient(to bottom, #0ea5e9, #3b82f6); }
-            .message-label { color: #0369a1; font-size: 16px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-            .message-label::before { content: '📝'; }
-            .message-excerpt { color: #1e293b; font-size: 17px; line-height: 1.8; font-style: italic; padding: 24px; background: rgba(255, 255, 255, 0.9); border-radius: 12px; backdrop-filter: blur(10px); }
-            .profile-section { background: #f8fafc; padding: 40px; border-radius: 20px; margin: 48px 0; text-align: center; }
-            .avatar { width: 80px; height: 80px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 50%; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: 700; }
-            .profile-name { color: #1e293b; font-size: 24px; font-weight: 700; margin: 0 0 8px 0; }
-            .profile-title { color: #64748b; font-size: 16px; margin: 0 0 24px 0; }
-            .contact-details { display: inline-flex; flex-direction: column; gap: 12px; text-align: left; }
-            .contact-item { color: #475569; font-size: 15px; display: flex; align-items: center; gap: 10px; }
-            .process-timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 48px 0; }
-            .process-step { text-align: center; padding: 24px; background: #f8fafc; border-radius: 16px; transition: transform 0.3s ease; }
-            .process-step:hover { transform: translateY(-5px); background: #f1f5f9; }
-            .step-number { width: 40px; height: 40px; background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-weight: 700; }
-            .step-title { color: #1e293b; font-size: 16px; font-weight: 600; margin: 0 0 8px 0; }
-            .step-desc { color: #64748b; font-size: 14px; margin: 0; }
-            .social-links { display: flex; justify-content: center; gap: 16px; margin: 40px 0; }
-            .social-icon { width: 44px; height: 44px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: all 0.3s ease; font-weight: 600; }
-            .social-icon:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3); }
-            .footer { background: #f8fafc; padding: 32px 40px; text-align: center; border-top: 1px solid #e2e8f0; }
-            .footer-text { color: #64748b; font-size: 14px; line-height: 1.6; margin: 0; }
-            .highlight { color: #0ea5e9; font-weight: 600; }
-            @media (max-width: 640px) {
-              .content, .header { padding: 40px 24px; }
-              .process-timeline { grid-template-columns: 1fr; }
-              .header h1 { font-size: 32px; }
-              .greeting h2 { font-size: 24px; }
+            @media only screen and (min-width: 600px) {
+              .container {
+                max-width: 600px !important;
+                margin: 20px auto !important;
+                border-radius: 10px !important;
+              }
+              .header {
+                padding: 60px 40px !important;
+              }
+              .content {
+                padding: 40px !important;
+              }
+              .footer {
+                padding: 40px !important;
+              }
+              .timeline {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 20px !important;
+              }
+              .timeline-step {
+                margin-bottom: 0 !important;
+              }
+              .social-icons {
+                gap: 20px !important;
+              }
+              .social-icon {
+                width: 50px !important;
+                height: 50px !important;
+                font-size: 20px !important;
+              }
+              .profile-container {
+                padding: 40px !important;
+              }
+            }
+            
+            @media only screen and (max-width: 599px) {
+              .header h1 {
+                font-size: 24px !important;
+              }
+              .header p {
+                font-size: 15px !important;
+              }
+              .greeting h2 {
+                font-size: 22px !important;
+              }
+              .timeline-step div:first-child {
+                width: 45px !important;
+                height: 45px !important;
+                font-size: 18px !important;
+              }
+              .message-content {
+                padding: 15px !important;
+              }
             }
           </style>
         </head>
-        <body>
-          <div class="email-container">
-            <div class="header">
-              <h1>Thank You, ${name}!</h1>
-              <p>Your message has been received successfully</p>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); line-height: 1.6; color: #333;">
+          <!-- Main Container -->
+          <div class="container" style="width: 100%; min-height: 100vh; background: white;">
+            
+            <!-- Header -->
+            <div class="header" style="background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%); padding: 50px 20px; text-align: center; color: white;">
+              <div style="font-size: 48px; margin-bottom: 20px;">✨</div>
+              <h1 style="margin: 0; font-size: 28px; font-weight: 700; padding: 0 10px;">Thank You, ${name}!</h1>
+              <p style="margin: 10px 0 0; opacity: 0.9; font-size: 16px; padding: 0 10px;">Your message has been received successfully</p>
             </div>
             
-            <div class="content">
-              <div class="greeting">
-                <h2>Hello, ${name} 👋</h2>
-                <p>Thank you for reaching out through my portfolio. I appreciate you taking the time to connect!</p>
+            <!-- Content -->
+            <div class="content" style="padding: 30px 20px;">
+              
+              <!-- Greeting -->
+              <div class="greeting" style="text-align: center; margin-bottom: 40px;">
+                <h2 style="color: #212529; font-size: 26px; font-weight: 700; margin: 0 0 15px 0;">Hello, ${name} 👋</h2>
+                <p style="color: #495057; font-size: 17px; line-height: 1.6; margin: 0; padding: 0 10px;">
+                  Thank you for reaching out through my portfolio. I sincerely appreciate you taking the time to connect with me!
+                </p>
               </div>
               
-              <div class="message-card">
-                <div class="message-label">Your Message</div>
-                <div class="message-excerpt">
-                  "${message.substring(0, 180)}${
-          message.length > 180 ? "..." : ""
-        }"
+              <!-- Message Card -->
+              <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 25px; margin: 40px 0; border-radius: 8px; border-left: 5px solid #0ea5e9;">
+                <div style="color: #0369a1; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                  <span>📝</span> Your Message
+                </div>
+                <div class="message-content" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #bae6fd; color: #334155; line-height: 1.6; font-style: italic;">
+                  ${message.replace(/\n/g, "<br>")}
                 </div>
               </div>
               
-              <div class="process-timeline">
-                <div class="process-step">
-                  <div class="step-number">1</div>
-                  <div class="step-title">Received</div>
-                  <div class="step-desc">Message logged</div>
+              <!-- Process Timeline -->
+              <div class="timeline" style="width: 100%; margin: 50px 0;">
+                <div class="timeline-step" style="text-align: center; background: #f8f9fa; padding: 25px; margin-bottom: 15px; border-radius: 8px;">
+                  <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-weight: 700; font-size: 20px;">1</div>
+                  <div style="color: #212529; font-size: 18px; font-weight: 600; margin-bottom: 8px;">Received</div>
+                  <div style="color: #6c757d; font-size: 15px;">Message logged</div>
                 </div>
-                <div class="process-step">
-                  <div class="step-number">2</div>
-                  <div class="step-title">Reviewing</div>
-                  <div class="step-desc">Analyzing request</div>
+                <div class="timeline-step" style="text-align: center; background: #f8f9fa; padding: 25px; margin-bottom: 15px; border-radius: 8px;">
+                  <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-weight: 700; font-size: 20px;">2</div>
+                  <div style="color: #212529; font-size: 18px; font-weight: 600; margin-bottom: 8px;">Reviewing</div>
+                  <div style="color: #6c757d; font-size: 15px;">Analyzing request</div>
                 </div>
-                <div class="process-step">
-                  <div class="step-number">3</div>
-                  <div class="step-title">Response</div>
-                  <div class="step-desc">Within 24 hours</div>
-                </div>
-              </div>
-              
-              <div class="profile-section">
-                <div class="avatar">N</div>
-                <div class="profile-name">Nitesh Kumar Sharma</div>
-                <div class="profile-title">Full Stack Developer</div>
-                <div class="contact-details">
-                  <div class="contact-item">📧 ${
-                    process.env.OWNER_EMAIL || "niteshkumarsharma9648@gmail.com"
-                  }</div>
-                  <div class="contact-item">🌐 Available for remote opportunities</div>
+                <div class="timeline-step" style="text-align: center; background: #f8f9fa; padding: 25px; margin-bottom: 15px; border-radius: 8px;">
+                  <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-weight: 700; font-size: 20px;">3</div>
+                  <div style="color: #212529; font-size: 18px; font-weight: 600; margin-bottom: 8px;">Response</div>
+                  <div style="color: #6c757d; font-size: 15px;">Within 24 hours</div>
                 </div>
               </div>
               
-              <p style="text-align: center; color: #475569; font-size: 16px; line-height: 1.7; margin: 32px 0;">
-                I'll review your message carefully and get back to you within <span class="highlight">24 hours</span>.
-                In the meantime, feel free to explore more of my work on my portfolio.
-              </p>
-              
-              <div class="social-links">
-                <a href="https://github.com/niteshkumarsharma" class="social-icon" title="GitHub">GH</a>
-                <a href="https://linkedin.com/in/niteshkumarsharma" class="social-icon" title="LinkedIn">IN</a>
-                <a href="https://devcraftnitesh.vercel.app" class="social-icon" title="Portfolio">P</a>
+              <!-- Profile Section -->
+              <div class="profile-container" style="background: #f8f9fa; padding: 30px; margin: 50px 0; border-radius: 8px; text-align: center;">
+                <div style="width: 90px; height: 90px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 36px; font-weight: 700;">N</div>
+                <div style="color: #212529; font-size: 22px; font-weight: 700; margin-bottom: 8px;">Nitesh Kumar Sharma</div>
+                <div style="color: #6c757d; font-size: 17px; margin-bottom: 30px;">Full Stack Developer</div>
+                <div style="text-align: left; display: inline-block; width: 100%; max-width: 300px;">
+                  <div style="color: #495057; font-size: 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                    <span style="font-size: 20px;">📧</span>
+                    <span>${
+                      process.env.OWNER_EMAIL ||
+                      "niteshkumarsharma9648@gmail.com"
+                    }</span>
+                  </div>
+                  <div style="color: #495057; font-size: 16px; display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 20px;">🌐</span>
+                    <span>Available for remote opportunities</span>
+                  </div>
+                </div>
               </div>
+              
+              <!-- Response Message -->
+              <div style="text-align: center; margin: 50px 0;">
+                <p style="color: #495057; font-size: 17px; line-height: 1.6; padding: 0 10px;">
+                  I'll review your message carefully and get back to you within 
+                  <span style="color: #0ea5e9; font-weight: 600;"> 24 hours</span>.
+                  In the meantime, feel free to explore more of my work on my portfolio.
+                </p>
+              </div>
+              
+              <!-- Social Links -->
+              <div style="text-align: center; margin: 50px 0;">
+                <div style="color: #6c757d; font-size: 16px; margin-bottom: 20px;">Connect with me:</div>
+                <div class="social-icons" style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                  <a href="https://www.linkedin.com/in/nitesh-kumar-sharma-2894a1185/" class="social-icon" style="display: inline-block; width: 50px; height: 50px; background: #0077b5; border-radius: 50%; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">in</a>
+                  <a href="https://www.facebook.com/niteshsharma.sharma.796" class="social-icon" style="display: inline-block; width: 50px; height: 50px; background: #1877f2; border-radius: 50%; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">f</a>
+                  <a href="https://www.instagram.com/niteshsharma_99/" class="social-icon" style="display: inline-block; width: 50px; height: 50px; background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d); border-radius: 50%; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">ig</a>
+                  <a href="https://github.com/niteshkumarsharma" class="social-icon" style="display: inline-block; width: 50px; height: 50px; background: #333; border-radius: 50%; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">gh</a>
+                  <a href="https://devcraftnitesh.vercel.app" class="social-icon" style="display: inline-block; width: 50px; height: 50px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 50%; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">P</a>
+                </div>
+              </div>
+              
             </div>
             
-            <div class="footer">
-              <p class="footer-text">
+            <!-- Footer -->
+            <div class="footer" style="background: #f8f9fa; padding: 30px 20px; text-align: center; border-top: 1px solid #dee2e6;">
+              <p style="color: #6c757d; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0; padding: 0 10px;">
                 This is an automated confirmation email. Please don't reply to this message.<br>
                 For direct inquiries, contact me at: ${
                   process.env.OWNER_EMAIL || "niteshkumarsharma9648@gmail.com"
                 }
               </p>
-              <p style="color: #94a3b8; font-size: 13px; margin-top: 20px;">
-                Sent on ${new Date().toLocaleDateString("en-US", {
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })} at ${new Date().toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}
-              </p>
+              <div style="color: #adb5bd; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                <span>🕐</span>
+                <span>${formattedDate} at ${formattedTime}</span>
+              </div>
             </div>
+            
           </div>
         </body>
         </html>
