@@ -325,7 +325,7 @@ const sendMail = async ({ name, email, message, to }) => {
                     <span style="font-size: 20px;">📧</span>
                     <span>${
                       process.env.OWNER_EMAIL ||
-                      "niteshkumarsharma9648@gmail.com"
+                      "niteshkumarsharma831@gmail.com"
                     }</span>
                   </div>
                   <div style="color: #495057; font-size: 16px; display: flex; align-items: center; gap: 12px;">
@@ -363,7 +363,7 @@ const sendMail = async ({ name, email, message, to }) => {
               <p style="color: #6c757d; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0; padding: 0 10px;">
                 This is an automated confirmation email. Please don't reply to this message.<br>
                 For direct inquiries, contact me at: ${
-                  process.env.OWNER_EMAIL || "niteshkumarsharma9648@gmail.com"
+                  process.env.OWNER_EMAIL || "niteshkumarsharma831@gmail.com"
                 }
               </p>
               <div style="color: #adb5bd; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
