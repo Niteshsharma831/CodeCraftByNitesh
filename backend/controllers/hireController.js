@@ -4,12 +4,26 @@ const sendMail = require("../utils/mailer.js");
 // ✅ POST: Create Hire Request
 const createHireRequest = async (req, res) => {
   try {
-    const { name, email, message } = req.body;
+    // 🔥 SAFE BODY HANDLING (fixes your error)
+    const { name, email, message } = req.body || {};
 
-    // Default recipient (your email from env)
-    const ownerEmail = process.env.OWNER_EMAIL || process.env.EMAIL_USER || "niteshkumarsharma831@gmail.com";
+    console.log("📥 Incoming Body:", req.body);
 
-    // Validate required fields
+    // Default recipient
+    const ownerEmail =
+      process.env.OWNER_EMAIL ||
+      process.env.EMAIL_USER ||
+      "niteshkumarsharma831@gmail.com";
+
+    // ❌ Validate body exists
+    if (!req.body) {
+      return res.status(400).json({
+        success: false,
+        error: "Request body is missing",
+      });
+    }
+
+    // ❌ Validate required fields
     if (!name || !email || !message) {
       return res.status(400).json({
         success: false,
@@ -17,7 +31,7 @@ const createHireRequest = async (req, res) => {
       });
     }
 
-    // Validate email format
+    // ❌ Validate email
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
@@ -26,7 +40,7 @@ const createHireRequest = async (req, res) => {
       });
     }
 
-    // Validate message length
+    // ❌ Validate message length
     if (message.trim().length < 10) {
       return res.status(400).json({
         success: false,
@@ -34,7 +48,8 @@ const createHireRequest = async (req, res) => {
       });
     }
 
-    // ✅ Save the request in MongoDB
+    // ✅ Save to MongoDB
+    console.log("💾 Saving to DB...");
     const hireRequest = new HireRequest({
       name: name.trim(),
       email: email.trim().toLowerCase(),
@@ -42,11 +57,12 @@ const createHireRequest = async (req, res) => {
     });
 
     await hireRequest.save();
+    console.log("✅ Saved to DB");
 
-    // ✅ Respond to frontend immediately
+    // ✅ Response to frontend
     res.status(201).json({
       success: true,
-      message: "Hire request received successfully! I'll get back to you soon.",
+      message: "Hire request received successfully!",
       data: {
         id: hireRequest._id,
         name: hireRequest.name,
@@ -55,11 +71,10 @@ const createHireRequest = async (req, res) => {
       },
     });
 
-    // ✅ Send emails in background (don't await for response)
+    // ✅ Send emails in background (non-blocking)
     sendEmailsInBackground(hireRequest, ownerEmail);
-
   } catch (error) {
-    console.error("❌ Error creating hire request:", error.message);
+    console.error("❌ FULL ERROR:", error);
 
     if (error.name === "ValidationError") {
       return res.status(400).json({
@@ -72,41 +87,41 @@ const createHireRequest = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      error: "Internal Server Error",
+      error: error.message || "Internal Server Error",
     });
   }
 };
 
-// Background email sending function
+// ✅ Background email sending
 const sendEmailsInBackground = async (hireRequest, ownerEmail) => {
   try {
     console.log("📧 Attempting to send emails...");
-    
-    // Send notification to owner
-    await sendMail({ 
-      name: hireRequest.name, 
-      email: hireRequest.email, 
-      message: hireRequest.message, 
-      to: ownerEmail 
+
+    // Send to owner
+    await sendMail({
+      name: hireRequest.name,
+      email: hireRequest.email,
+      message: hireRequest.message,
+      to: ownerEmail,
     });
+
     console.log(`✅ Notification sent to owner: ${ownerEmail}`);
 
-    // Send confirmation to user
+    // Send to user
     await sendMail({
       name: hireRequest.name,
       email: hireRequest.email,
       message: hireRequest.message,
       to: hireRequest.email,
     });
+
     console.log(`✅ Thank-you email sent to: ${hireRequest.email}`);
-    
   } catch (emailError) {
     console.error("❌ Email sending failed:", emailError.message);
-    // Don't throw error - emails failing shouldn't affect the request
   }
 };
 
-// ✅ GET: Retrieve All Hire Requests
+// ✅ GET: All Hire Requests
 const getHireRequests = async (req, res) => {
   try {
     const { page = 1, limit = 20, status } = req.query;
@@ -136,10 +151,11 @@ const getHireRequests = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error fetching hire requests:", error.message);
+    console.error("❌ FULL ERROR:", error);
+
     res.status(500).json({
       success: false,
-      error: "Failed to fetch hire requests",
+      error: error.message,
     });
   }
 };

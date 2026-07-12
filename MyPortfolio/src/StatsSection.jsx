@@ -1,66 +1,322 @@
+// // StatsSection.jsx
+// import React, { useEffect, useState } from "react";
+// import { motion } from "framer-motion";
+// import { FaProjectDiagram, FaUserTie, FaUsers, FaTools } from "react-icons/fa";
+
+// // Counter component
+// const Counter = ({ end, duration = 2 }) => {
+//   const [count, setCount] = useState(0);
+
+//   useEffect(() => {
+//     let start = 0;
+//     const increment = end / (duration * 60);
+//     const counter = setInterval(() => {
+//       start += increment;
+//       if (start >= end) {
+//         setCount(end);
+//         clearInterval(counter);
+//       } else {
+//         setCount(Math.floor(start));
+//       }
+//     }, 1000 / 60);
+//     return () => clearInterval(counter);
+//   }, [end, duration]);
+
+//   return <span>{count}</span>;
+// };
+
+// const StatsSection = () => {
+//   const stats = [
+//     { title: "Projects", value: 20, icon: <FaProjectDiagram size={32} /> },
+//     { title: "Experience", value: 1, icon: <FaUserTie size={32} /> },
+//     { title: "Clients", value: 8, icon: <FaUsers size={32} /> },
+//     { title: "Skills", value: 14, icon: <FaTools size={32} /> },
+//   ];
+
+//   return (
+//     <section
+//       id="stats"
+//       className="w-full py-20 bg-gradient-to-b from-zinc-900 to-zinc-800 text-white flex justify-center relative overflow-hidden"
+//     >
+//       {/* Optional background shape */}
+//       <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600 opacity-20 rounded-full blur-3xl -z-10"></div>
+//       <div className="absolute bottom-0 right-0 w-72 h-72 bg-yellow-400 opacity-20 rounded-full blur-3xl -z-10"></div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-center max-w-6xl w-full px-4">
+//         {stats.map((stat, index) => (
+//           <motion.div
+//             key={index}
+//             className="bg-zinc-900/50 backdrop-blur-md rounded-xl p-6 flex flex-col items-center justify-center shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer border border-zinc-700"
+//             initial={{ opacity: 0, y: 20 }}
+//             whileInView={{ opacity: 1, y: 0 }}
+//             whileHover={{ scale: 1.05 }}
+//             transition={{ duration: 0.6, delay: index * 0.2 }}
+//           >
+//             <div className="text-yellow-400 mb-4">{stat.icon}</div>
+//             <h2 className="text-4xl font-bold mb-2">
+//               <Counter end={stat.value} />
+//               {stat.title === "Experience" ? "+" : ""}
+//             </h2>
+//             <p className="text-lg font-medium text-gray-300">{stat.title}</p>
+//           </motion.div>
+//         ))}
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default StatsSection;
+
+
 // StatsSection.jsx
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { FaProjectDiagram, FaUserTie, FaUsers, FaTools } from "react-icons/fa";
 
-// Counter component
-const Counter = ({ end, duration = 2 }) => {
+// Counter component with enhanced animation
+const Counter = ({ end, duration = 2, isInView }) => {
   const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {
-    let start = 0;
-    const increment = end / (duration * 60);
-    const counter = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        setCount(end);
-        clearInterval(counter);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 1000 / 60);
-    return () => clearInterval(counter);
-  }, [end, duration]);
+    if (isInView && !hasAnimated) {
+      let start = 0;
+      const increment = end / (duration * 60);
+      const counter = setInterval(() => {
+        start += increment;
+        if (start >= end) {
+          setCount(end);
+          clearInterval(counter);
+          setHasAnimated(true);
+        } else {
+          setCount(Math.floor(start));
+        }
+      }, 1000 / 60);
+      return () => clearInterval(counter);
+    }
+  }, [isInView, end, duration, hasAnimated]);
 
   return <span>{count}</span>;
 };
 
 const StatsSection = () => {
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+
   const stats = [
-    { title: "Projects", value: 20, icon: <FaProjectDiagram size={32} /> },
-    { title: "Experience", value: 1, icon: <FaUserTie size={32} /> },
-    { title: "Clients", value: 8, icon: <FaUsers size={32} /> },
-    { title: "Skills", value: 14, icon: <FaTools size={32} /> },
+    { 
+      title: "Projects", 
+      value: 20, 
+      icon: <FaProjectDiagram size={32} />,
+      color: "from-orange-400 to-orange-500",
+      bgColor: "from-orange-500/20",
+      delay: 0
+    },
+    { 
+      title: "Experience", 
+      value: 1, 
+      icon: <FaUserTie size={32} />,
+      color: "from-cyan-400 to-blue-500",
+      bgColor: "from-cyan-500/20",
+      delay: 0.1
+    },
+    { 
+      title: "Clients", 
+      value: 8, 
+      icon: <FaUsers size={32} />,
+      color: "from-teal-400 to-cyan-500",
+      bgColor: "from-teal-500/20",
+      delay: 0.2
+    },
+    { 
+      title: "Skills", 
+      value: 14, 
+      icon: <FaTools size={32} />,
+      color: "from-purple-400 to-pink-500",
+      bgColor: "from-purple-500/20",
+      delay: 0.3
+    },
   ];
 
   return (
     <section
+      ref={sectionRef}
       id="stats"
-      className="w-full py-20 bg-gradient-to-b from-zinc-900 to-zinc-800 text-white flex justify-center relative overflow-hidden"
+      className="w-full py-20 bg-[#0B1120] text-white flex justify-center relative overflow-hidden"
     >
-      {/* Optional background shape */}
-      <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600 opacity-20 rounded-full blur-3xl -z-10"></div>
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-yellow-400 opacity-20 rounded-full blur-3xl -z-10"></div>
+      {/* Animated Background Elements */}
+      <motion.div
+        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-orange-500/5 via-cyan-500/5 to-blue-500/5 blur-3xl"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.6, 0.3]
+        }}
+        transition={{
+          repeat: Infinity,
+          duration: 8,
+          ease: "easeInOut"
+        }}
+      />
+      <motion.div
+        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-3xl"
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.2, 0.5, 0.2]
+        }}
+        transition={{
+          repeat: Infinity,
+          duration: 10,
+          ease: "easeInOut"
+        }}
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-center max-w-6xl w-full px-4">
+      {/* Floating Particles */}
+      {[...Array(12)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full"
+          style={{
+            width: Math.random() * 3 + 1 + 'px',
+            height: Math.random() * 3 + 1 + 'px',
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            background: i % 3 === 0 ? '#FB923C' : i % 3 === 1 ? '#3B82F6' : '#14B8A6',
+            opacity: 0.1,
+          }}
+          animate={{
+            y: [0, -30, 0],
+            x: [0, Math.random() * 20 - 10, 0],
+            opacity: [0.05, 0.2, 0.05],
+          }}
+          transition={{
+            repeat: Infinity,
+            duration: Math.random() * 4 + 3,
+            delay: Math.random() * 3,
+          }}
+        />
+      ))}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center max-w-6xl w-full px-4 relative z-10">
         {stats.map((stat, index) => (
           <motion.div
             key={index}
-            className="bg-zinc-900/50 backdrop-blur-md rounded-xl p-6 flex flex-col items-center justify-center shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer border border-zinc-700"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.6, delay: index * 0.2 }}
+            className="relative bg-white/5 backdrop-blur-xl rounded-2xl p-8 flex flex-col items-center justify-center border border-white/10 hover:border-orange-400/30 transition-all duration-500 group overflow-hidden"
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{ 
+              opacity: isInView ? 1 : 0,
+              y: isInView ? 0 : 30,
+              scale: isInView ? 1 : 0.9,
+              transition: { 
+                duration: 0.6, 
+                delay: index * 0.1,
+                type: "spring",
+                stiffness: 200
+              }
+            }}
+            whileHover={{ 
+              scale: 1.05,
+              boxShadow: "0 20px 40px -12px rgba(0,0,0,0.4)"
+            }}
           >
-            <div className="text-yellow-400 mb-4">{stat.icon}</div>
-            <h2 className="text-4xl font-bold mb-2">
-              <Counter end={stat.value} />
-              {stat.title === "Experience" ? "+" : ""}
-            </h2>
-            <p className="text-lg font-medium text-gray-300">{stat.title}</p>
+            {/* Animated Gradient Background */}
+            <motion.div
+              className={`absolute inset-0 bg-gradient-to-r ${stat.bgColor} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+              animate={{
+                opacity: [0, 0.3, 0]
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: 3,
+                delay: stat.delay
+              }}
+            />
+
+            {/* Glowing Border Animation */}
+            <motion.div
+              className="absolute -inset-0.5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{
+                background: `conic-gradient(from 0deg, ${stat.color.split(' ')[1]}, #3B82F6, #14B8A6, ${stat.color.split(' ')[1]})`,
+              }}
+              animate={{
+                rotate: 360,
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: 8,
+                ease: "linear"
+              }}
+            />
+
+            <div className="relative z-10">
+              {/* Icon with Animation */}
+              <motion.div 
+                className={`text-transparent bg-clip-text bg-gradient-to-r ${stat.color} mb-4`}
+                animate={{
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 10, -10, 0]
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 3,
+                  delay: stat.delay
+                }}
+              >
+                {stat.icon}
+              </motion.div>
+
+              {/* Counter with Animation - Uses isInView prop */}
+              <motion.h2 
+                className={`text-4xl md:text-5xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-2`}
+                animate={{
+                  scale: [1, 1.05, 1]
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 2,
+                  delay: stat.delay
+                }}
+              >
+                <Counter end={stat.value} isInView={isInView} />
+                {stat.title === "Experience" ? "+" : "+"}
+              </motion.h2>
+
+              {/* Title */}
+              <p className="text-lg font-medium text-gray-300 group-hover:text-white transition-colors duration-300">
+                {stat.title}
+              </p>
+
+              {/* Decorative Line */}
+              <motion.div
+                className={`h-0.5 w-12 mx-auto mt-3 bg-gradient-to-r ${stat.color} rounded-full`}
+                initial={{ width: 0 }}
+                animate={{ 
+                  width: isInView ? 48 : 0,
+                  transition: { duration: 0.6, delay: 0.3 + index * 0.1 }
+                }}
+              />
+            </div>
+
+            {/* Hover Glow Effect */}
+            <motion.div
+              className={`absolute -inset-8 rounded-full bg-gradient-to-r ${stat.color} opacity-0 group-hover:opacity-10 blur-2xl transition-opacity duration-500`}
+            />
           </motion.div>
         ))}
       </div>
+
+      {/* Decorative Bottom Line */}
+      <motion.div
+        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent"
+        animate={{
+          width: ["0%", "33%", "0%"],
+          opacity: [0, 1, 0]
+        }}
+        transition={{
+          repeat: Infinity,
+          duration: 4,
+          ease: "easeInOut"
+        }}
+      />
     </section>
   );
 };
