@@ -37,8 +37,9 @@ mongoose.connect(MONGO_URI, {
   useUnifiedTopology: true,
 })
 .then(() => console.log(`✅ MongoDB connected [${process.env.NODE_ENV || "dev"}]`))
-.catch(err => {
-  console.error("❌ MongoDB connection failed:", err.message);
+.catch((err) => {
+  console.error("❌ MongoDB connection failed:");
+  console.error(err);
   process.exit(1);
 });
 
