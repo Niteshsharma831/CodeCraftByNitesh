@@ -346,11 +346,11 @@ const Hero = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <span className="block">Full Stack & MERN Developer</span>
+              <span className="block">Nitesh Kumar Sharma</span>
 
               <span className="relative inline-block">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-orange-400 bg-[length:200%_auto] animate-gradient">
-                  Nitesh Kumar Sharma
+                  Full Stack & MERN Developer
                 </span>
 
                 <motion.span
@@ -368,7 +368,7 @@ const Hero = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              React, Node.js, Express & MongoDB Developer from India 🇮🇳
+              React, Node.js, Express.js & MongoDB Developer{" "}
             </motion.h2>
 
             <motion.p
